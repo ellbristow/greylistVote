@@ -1,0 +1,8 @@
+# greylistVote by ellbristow
+# 
+# For development updates, visit
+# http://github.com/ellbristow/greylistvote
+# 
+# Plugin Configuration
+
+required_votes: 2

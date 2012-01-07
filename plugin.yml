@@ -1,0 +1,21 @@
+name: GreylistVote
+main: me.ellbristow.greylistVote.greylistVote
+version: 0.1
+author: ellbristow
+description: >
+             Control the build rights of new players using votes
+commands:
+  greylist:
+    description: Vote for a greylisted player.
+    permission: greylistvote.vote
+    usage: "/<command> [player]"
+permissions:
+  greylistvote.*:
+    description: Access to all GreylistVote commands
+    children:
+      greylistvote.approved: true
+      greylistvote.vote: true
+  greylistvote.approved:
+    description: Player is approved to build.
+  greylistvote.vote:
+    description: Player can vote for a greylisted player.

@@ -33,7 +33,7 @@ public class greyBlockListener extends BlockListener {
 	
 	public void onBlockIgnite (BlockIgniteEvent event) {
 		Player player = event.getPlayer();
-		if (!player.hasPermission("greylistvote.approved")) {
+		if (player != null && !player.hasPermission("greylistvote.approved")) {
 			player.sendMessage(ChatColor.RED + "Charlie says stop playing with fire!");
 			event.setCancelled(true);
 		}

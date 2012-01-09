@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,10 +54,10 @@ public class greylistVote extends JavaPlugin {
 				return false;
 			}
 			else {
-				Player target = getServer().getPlayer(args[0]);
+				Player target = getServer().getOfflinePlayer(args[0]).getPlayer();
 				if (target == null) {
 					// Player not online
-					sender.sendMessage(ChatColor.RED + "Player " + ChatColor.WHITE + args[0] + ChatColor.RED + " not found or not online!");
+					sender.sendMessage(args[0] + ChatColor.RED + " not found!");
 					return false;
 				}
 				if (!(sender instanceof Player)) {
@@ -75,7 +76,7 @@ public class greylistVote extends JavaPlugin {
 					return true;
 				}
 				int reqVotes = this.config.getInt("required_votes");
-				String voteList = this.usersConfig.getString(target.getName() + ".votes", null);
+				String voteList = this.usersConfig.getString(target.getName().toLowerCase() + ".votes", null);
 				if (voteList == null) {
 					// No votes received for this target player
 					if (reqVotes <= 1) {
@@ -83,7 +84,7 @@ public class greylistVote extends JavaPlugin {
 						this.setApproved(target);
 						return true;
 					}
-					this.usersConfig.set(target.getName() + ".votes", sender.getName());
+					this.usersConfig.set(target.getName().toLowerCase() + ".votes", sender.getName());
 				}
 				else {
 					// Target has votes already
@@ -109,7 +110,7 @@ public class greylistVote extends JavaPlugin {
 							chatPlayer.sendMessage(sender.getName() + ChatColor.GOLD + " voted for you to be greylisted!");
 						}
 					}
-					this.usersConfig.set(target.getName() + ".votes", voteList + "," + sender.getName());
+					this.usersConfig.set(target.getName().toLowerCase() + ".votes", voteList + "," + sender.getName());
 					if (voteArray.length + 1 >= reqVotes) {
 						// Enough votes received
 						this.setApproved(target);
@@ -121,24 +122,52 @@ public class greylistVote extends JavaPlugin {
 			}
 		}
 		else if (commandLabel.equalsIgnoreCase("votelist") || commandLabel.equalsIgnoreCase("glvlist")) {
-			Player target = getServer().getPlayer(args[0]);
-			if (target == null) {
-				// Player not online
-				sender.sendMessage(ChatColor.RED + "Player " + ChatColor.WHITE + args[0] + ChatColor.RED + " not found or not online!");
-				return false;
-			}
-			String voteList = this.usersConfig.getString(target.getName() + ".votes", null);
-			if (voteList == null) {
-				sender.sendMessage(target.getDisplayName() + ChatColor.GOLD + " has not received any votes.");
+			if (args.length == 0) {
+				String voteList = this.usersConfig.getString(sender.getName().toLowerCase() + ".votes", null);
+				if (voteList == null) {
+					sender.sendMessage(ChatColor.GOLD + "You have not received any votes.");
+				}
+				else {
+					sender.sendMessage(ChatColor.GOLD + "You have received votes from:");
+					String[] voteArray = voteList.split(",");
+					for (String vote : voteArray) {
+						sender.sendMessage(ChatColor.GOLD + "  " + vote);
+					}
+				}
+				return true;
 			}
 			else {
-				sender.sendMessage(target.getDisplayName() + ChatColor.GOLD + " has received votes from:");
-				String[] voteArray = voteList.split(",");
-				for (String vote : voteArray) {
-					sender.sendMessage(ChatColor.GOLD + "  " + vote);
+				OfflinePlayer checktarget = getServer().getOfflinePlayer(args[0]);
+				String DN = null;
+				String target = null;
+				if (checktarget.isOnline()) {
+					target = checktarget.getPlayer().getName();
+					DN = checktarget.getPlayer().getDisplayName();
 				}
+				else {
+					if (checktarget != null) {
+						target = checktarget.getName();
+						DN = checktarget.getName();
+					}
+				}
+				if (target == null) {
+					// Player not found
+					sender.sendMessage(args[0] + ChatColor.RED + " not found!");
+					return false;
+				}
+				String voteList = this.usersConfig.getString(target.toLowerCase() + ".votes", null);
+				if (voteList == null) {
+					sender.sendMessage(DN + ChatColor.GOLD + " has not received any votes.");
+				}
+				else {
+					sender.sendMessage(DN + ChatColor.GOLD + " has received votes from:");
+					String[] voteArray = voteList.split(",");
+					for (String vote : voteArray) {
+						sender.sendMessage(ChatColor.GOLD + "  " + vote);
+					}
+				}
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}

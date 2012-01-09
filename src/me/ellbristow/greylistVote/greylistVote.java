@@ -47,7 +47,7 @@ public class greylistVote extends JavaPlugin {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (commandLabel.equalsIgnoreCase("greylist")) {
+		if (commandLabel.equalsIgnoreCase("greylist") || commandLabel.equalsIgnoreCase("gl")) {
 			if (args.length != 1) {
 				// No player specified or too many arguments
 				return false;
@@ -75,7 +75,7 @@ public class greylistVote extends JavaPlugin {
 					return true;
 				}
 				int reqVotes = this.config.getInt("required_votes");
-				String voteList = this.usersConfig.getString(target + ".votes", null);
+				String voteList = this.usersConfig.getString(target.getName() + ".votes", null);
 				if (voteList == null) {
 					// No votes received for this target player
 					if (reqVotes <= 1) {
@@ -109,7 +109,7 @@ public class greylistVote extends JavaPlugin {
 							chatPlayer.sendMessage(sender.getName() + ChatColor.GOLD + " voted for you to be greylisted!");
 						}
 					}
-					this.usersConfig.set(target.getName() + ".votes", voteList + ", " + sender.getName());
+					this.usersConfig.set(target.getName() + ".votes", voteList + "," + sender.getName());
 					if (voteArray.length + 1 >= reqVotes) {
 						// Enough votes received
 						this.setApproved(target);
@@ -119,6 +119,26 @@ public class greylistVote extends JavaPlugin {
 				this.saveUsersConfig();
 				return true;
 			}
+		}
+		else if (commandLabel.equalsIgnoreCase("votelist") || commandLabel.equalsIgnoreCase("glvlist")) {
+			Player target = getServer().getPlayer(args[0]);
+			if (target == null) {
+				// Player not online
+				sender.sendMessage(ChatColor.RED + "Player " + ChatColor.WHITE + args[0] + ChatColor.RED + " not found or not online!");
+				return false;
+			}
+			String voteList = this.usersConfig.getString(target.getName() + ".votes", null);
+			if (voteList == null) {
+				sender.sendMessage(target.getDisplayName() + ChatColor.GOLD + " has not received any votes.");
+			}
+			else {
+				sender.sendMessage(target.getDisplayName() + ChatColor.GOLD + " has received votes from:");
+				String[] voteArray = voteList.split(",");
+				for (String vote : voteArray) {
+					sender.sendMessage(ChatColor.GOLD + "  " + vote);
+				}
+			}
+			return true;
 		}
 		return false;
 	}

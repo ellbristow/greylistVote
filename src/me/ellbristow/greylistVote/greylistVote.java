@@ -109,12 +109,12 @@ public class greylistVote extends JavaPlugin {
 							chatPlayer.sendMessage(sender.getName() + ChatColor.GOLD + " voted for you to be greylisted!");
 						}
 					}
+					this.usersConfig.set(target.getName() + ".votes", voteList + ", " + sender.getName());
 					if (voteArray.length + 1 >= reqVotes) {
 						// Enough votes received
 						this.setApproved(target);
 						return true;
 					}
-					this.usersConfig.set(target.getName() + ".votes", voteList + ", " + sender.getName());
 				}
 				this.saveUsersConfig();
 				return true;

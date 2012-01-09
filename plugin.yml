@@ -1,6 +1,6 @@
 name: GreylistVote
 main: me.ellbristow.greylistVote.greylistVote
-version: 0.2
+version: 0.2.1
 author: ellbristow
 description: >
              Control the build rights of new players using votes
@@ -13,7 +13,7 @@ commands:
   votelist:
     description: Show who has already voted for the player.
     permission: greylistvote.list
-    usage: "/<command> [player]"
+    usage: "/<command> {player}"
     aliases: glvlist
 permissions:
   greylistvote.*:

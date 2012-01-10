@@ -1,11 +1,13 @@
 package me.ellbristow.greylistVote;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class greyBlockListener extends BlockListener {
 	
@@ -19,6 +21,10 @@ public class greyBlockListener extends BlockListener {
 		Player player = event.getPlayer();
 		if (!player.hasPermission("greylistvote.approved")) {
 			player.sendMessage(ChatColor.RED + "You are not yet approved to place blocks!");
+			if (event.getBlockPlaced().getTypeId() == 323) {
+				ItemStack items = new ItemStack(Material.SIGN, event.getPlayer().getItemInHand().getAmount() + 1);
+				event.getPlayer().setItemInHand(items);
+			}
 			event.setCancelled(true);
 		}
 	}

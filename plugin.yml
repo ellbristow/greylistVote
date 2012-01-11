@@ -1,6 +1,6 @@
 name: GreylistVote
 main: me.ellbristow.greylistVote.greylistVote
-version: 0.2.2
+version: 0.2.3
 author: ellbristow
 description: >
              Control the build rights of new players using votes

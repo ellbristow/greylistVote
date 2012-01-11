@@ -2,6 +2,8 @@ package me.ellbristow.greylistVote;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
@@ -33,7 +35,14 @@ public class greyBlockListener extends BlockListener {
 		Player player = event.getPlayer();
 		if (!player.hasPermission("greylistvote.approved")) {
 			player.sendMessage(ChatColor.RED + "You are not yet approved to destroy blocks!");
+			Block block = event.getBlock();
 			event.setCancelled(true);
+			if (block.getTypeId() == 63 || block.getTypeId() == 68) {
+				// Block is a sign
+				Sign sign = (Sign) block.getState();
+				sign.setLine(1, sign.getLine(1));
+				sign.update();
+			}
 		}
 	}
 	

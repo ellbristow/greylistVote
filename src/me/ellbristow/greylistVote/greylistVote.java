@@ -201,21 +201,26 @@ public class greylistVote extends JavaPlugin {
 				}
 				else {
 					sender.sendMessage(ChatColor.GOLD + "You have received votes from:");
-					String[] voteArray = voteList.split(",");
-					if (voteArray.length != 0) {
-						String votes = ChatColor.GREEN + "  Approvals: " + ChatColor.GOLD;
-						for (String vote : voteArray) {
-							votes = votes + vote + " ";
+					String[] voteArray;
+					if (voteList != null) {
+						voteArray = voteList.split(",");
+						if (voteArray.length != 0) {
+							String votes = ChatColor.GREEN + "  Approvals: " + ChatColor.GOLD;
+							for (String vote : voteArray) {
+								votes = votes + vote + " ";
+							}
+							sender.sendMessage(votes);
 						}
-						sender.sendMessage(votes);
 					}
-					voteArray = griefList.split(",");
-					if (voteArray.length != 0) {
-						String votes = ChatColor.BLACK + "  Black-Balls: " + ChatColor.GOLD;
-						for (String vote : voteArray) {
-							votes = votes + vote + " ";
+					if (griefList != null) {
+						voteArray = griefList.split(",");
+						if (voteArray.length != 0) {
+							String votes = ChatColor.BLACK + "  Black-Balls: " + ChatColor.GOLD;
+							for (String vote : voteArray) {
+								votes = votes + vote + " ";
+							}
+							sender.sendMessage(votes);
 						}
-						sender.sendMessage(votes);
 					}
 				}
 				return true;

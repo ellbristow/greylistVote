@@ -110,8 +110,14 @@ public class greylistVote extends JavaPlugin {
 				if (voteList != null) {
 					voteArray = voteList.split(",");
 				}
+				else {
+					voteList = "";
+				}
 				if (griefList != null) {
 					griefArray = griefList.split(",");
+				}
+				else {
+					griefList = "";
 				}
 				if (!(sender instanceof Player)) {
 					// Voter is the console
@@ -186,8 +192,14 @@ public class greylistVote extends JavaPlugin {
 				if (voteList != null) {
 					voteArray = voteList.split(",");
 				}
+				else {
+					voteList = "";
+				}
 				if (griefList != null) {
 					griefArray = griefList.split(",");
+				}
+				else {
+					griefList = "";
 				}
 				if (!(sender instanceof Player)) {
 					// Voter is the console

@@ -127,11 +127,12 @@ public class greylistVote extends JavaPlugin {
 					sender.sendMessage(ChatColor.RED + "You cannot vote for yourself!");
 					return true;
 				}
-				// Target has votes already
 				boolean found = false;
-				for (String vote : voteArray) {
-					if (vote.equalsIgnoreCase(sender.getName())) {
-						found = true;
+				if (voteArray != null) {
+					for (String vote : voteArray) {
+						if (vote.equalsIgnoreCase(sender.getName())) {
+							found = true;
+						}
 					}
 				}
 				if (found) {
@@ -203,9 +204,11 @@ public class greylistVote extends JavaPlugin {
 					return true;
 				}
 				boolean found = false;
-				for (String vote : griefArray) {
-					if (vote.equalsIgnoreCase(sender.getName())) {
-						found = true;
+				if (griefArray != null) {
+					for (String vote : griefArray) {
+						if (vote.equalsIgnoreCase(sender.getName())) {
+							found = true;
+						}
 					}
 				}
 				if (found) {

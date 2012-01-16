@@ -156,11 +156,6 @@ public class greylistVote extends JavaPlugin {
 				String voteList = this.usersConfig.getString(target.getName().toLowerCase() + ".griefer", null);
 				if (voteList == null) {
 					// No votes received for this target player
-					if (reqVotes <= 1) {
-						// Enough votes received
-						this.setGriefer(target);
-						return true;
-					}
 					sender.sendMessage(ChatColor.GOLD + "Your griefer vote for " + ChatColor.WHITE + target.getName() + ChatColor.GOLD + " has been accepted!");
 					Player[] onlinePlayers = getServer().getOnlinePlayers();
 					for (Player chatPlayer : onlinePlayers) {
@@ -173,6 +168,10 @@ public class greylistVote extends JavaPlugin {
 					}
 					this.usersConfig.set(target.getName().toLowerCase() + ".griefer", sender.getName());
 					this.usersConfig.set(target.getName().toLowerCase() + ".votes", null);
+					if (reqVotes <= 1) {
+						// Enough votes received
+						this.setGriefer(target);
+					}
 				}
 				else {
 					// Target has votes already
@@ -203,7 +202,6 @@ public class greylistVote extends JavaPlugin {
 					if (voteArray.length + 1 >= reqVotes) {
 						// Enough votes received
 						this.setGriefer(target);
-						return true;
 					}
 				}
 				this.saveUsersConfig();
@@ -263,7 +261,36 @@ public class greylistVote extends JavaPlugin {
 					return false;
 				}
 				String voteList = this.usersConfig.getString(target.toLowerCase() + ".votes", null);
-				if (voteList == null) {
+				String griefList = this.usersConfig.getString(target.toLowerCase() + ".griefer", null);
+				if (voteList == null && griefList == null) {
+					sender.sendMessage(DN + ChatColor.GOLD + " has not received any votes.");
+				}
+				else {
+					sender.sendMessage(DN + ChatColor.GOLD + " has received votes from:");
+					String[] voteArray;
+					if (voteList != null) {
+						voteArray = voteList.split(",");
+						if (voteArray.length != 0) {
+							String votes = ChatColor.GREEN + "  Approvals: " + ChatColor.GOLD;
+							for (String vote : voteArray) {
+								votes = votes + vote + " ";
+							}
+							sender.sendMessage(votes);
+						}
+					}
+					if (griefList != null) {
+						voteArray = griefList.split(",");
+						if (voteArray.length != 0) {
+							String votes = ChatColor.BLACK + "  Black-Balls: " + ChatColor.GOLD;
+							for (String vote : voteArray) {
+								votes = votes + vote + " ";
+							}
+							sender.sendMessage(votes);
+						}
+					}
+				}
+				return true;
+				/*if (voteList == null) {
 					sender.sendMessage(DN + ChatColor.GOLD + " has not received any votes.");
 				}
 				else {
@@ -273,7 +300,7 @@ public class greylistVote extends JavaPlugin {
 						sender.sendMessage(ChatColor.GOLD + "  " + vote);
 					}
 				}
-				return true;
+				return true;*/
 			}
 		}
 		return false;

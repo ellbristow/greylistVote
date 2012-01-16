@@ -130,7 +130,7 @@ public class greylistVote extends JavaPlugin {
 				// Target has votes already
 				boolean found = false;
 				for (String vote : voteArray) {
-					if (vote == sender.getName()) {
+					if (vote.equalsIgnoreCase(sender.getName())) {
 						found = true;
 					}
 				}
@@ -150,7 +150,14 @@ public class greylistVote extends JavaPlugin {
 					}
 				}
 				this.usersConfig.set(target.getName().toLowerCase() + ".votes", voteList + "," + sender.getName());
-				if ((voteArray.length + 1) - griefArray.length >= reqVotes) {
+				int rep = 0;
+				if (voteArray != null) {
+					rep += voteArray.length + 1;
+				}
+				if (griefArray != null) {
+					rep -= griefArray.length;
+				}
+				if (rep >= reqVotes && !target.hasPermission("greylistvote.approved")) {
 					// Enough votes received
 					this.setApproved(target);
 				}
@@ -197,7 +204,7 @@ public class greylistVote extends JavaPlugin {
 				}
 				boolean found = false;
 				for (String vote : griefArray) {
-					if (vote == sender.getName()) {
+					if (vote.equalsIgnoreCase(sender.getName())) {
 						found = true;
 					}
 				}
@@ -217,7 +224,14 @@ public class greylistVote extends JavaPlugin {
 					}
 				}
 				this.usersConfig.set(target.getName().toLowerCase() + ".griefer", voteList + "," + sender.getName());
-				if (voteArray.length - (griefArray.length + 1) < reqVotes) {
+				int rep = 0;
+				if (voteArray != null) {
+					rep += voteArray.length;
+				}
+				if (griefArray != null) {
+					rep -= griefArray.length + 1;
+				}
+				if (rep < reqVotes) {
 					// Enough votes received
 					this.setGriefer(target);
 				}

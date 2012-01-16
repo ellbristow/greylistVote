@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,13 +29,13 @@ public class greylistVote extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
-		this.logger.info(pdfFile.getName() + " is now disabled.");
+		this.logger.info("[" + pdfFile.getName() + "] is now disabled.");
 	}
 
 	@Override
 	public void onEnable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
-		this.logger.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled.");
+		this.logger.info("[" + pdfFile.getName() + "] version " + pdfFile.getVersion() + " is enabled.");
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockListener, Event.Priority.Normal, this);
@@ -307,8 +306,7 @@ public class greylistVote extends JavaPlugin {
 	}
 	
 	public void setApproved(Player target) {
-		PermissionAttachment attachment = target.addAttachment(plugin);
-		attachment.setPermission("greylistvote.approved", true);
+		target.addAttachment(this, "greylistvote.approved", true);
 		Player[] onlinePlayers = getServer().getOnlinePlayers();
 		for (Player chatPlayer : onlinePlayers) {
 			if (chatPlayer.getName() != target.getName()) {
@@ -321,8 +319,7 @@ public class greylistVote extends JavaPlugin {
 	}
 	
 	public void setGriefer(Player target) {
-		PermissionAttachment attachment = target.addAttachment(plugin);
-		attachment.setPermission("greylistvote.approved", false);
+		target.addAttachment(this, "greylistvote.approved",false);
 		Player[] onlinePlayers = getServer().getOnlinePlayers();
 		for (Player chatPlayer : onlinePlayers) {
 			if (chatPlayer.getName() != target.getName()) {

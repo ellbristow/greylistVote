@@ -5,8 +5,7 @@
 # 
 # Plugin Configuration
 # 
-# required_votes: How many votes are needed to be approved?
-# griefer_votes: How many votes are needed before approval is revoked?
+# required_votes: If Approval votes - Griefer votes is greater than this,
+# player will be approved. If it drops below, they will lose build rights.
 
 required_votes: 2
-griefer_votes: 3

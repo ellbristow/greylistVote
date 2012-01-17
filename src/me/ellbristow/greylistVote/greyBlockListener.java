@@ -21,7 +21,7 @@ public class greyBlockListener extends BlockListener {
 	
 	public void onBlockPlace (BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		if (!player.hasPermission("greylistvote.approved")) {
+		if (player != null && !player.hasPermission("greylistvote.approved")) {
 			player.sendMessage(ChatColor.RED + "You are not yet approved to place blocks!");
 			if (event.getBlockPlaced().getTypeId() == 323) {
 				ItemStack items = new ItemStack(Material.SIGN, event.getPlayer().getItemInHand().getAmount() + 1);
@@ -33,7 +33,7 @@ public class greyBlockListener extends BlockListener {
 	
 	public void onBlockBreak (BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		if (!player.hasPermission("greylistvote.approved")) {
+		if (player != null && !player.hasPermission("greylistvote.approved")) {
 			player.sendMessage(ChatColor.RED + "You are not yet approved to destroy blocks!");
 			Block block = event.getBlock();
 			event.setCancelled(true);

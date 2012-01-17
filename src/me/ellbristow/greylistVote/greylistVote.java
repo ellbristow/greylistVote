@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,8 +23,9 @@ public class greylistVote extends JavaPlugin {
 	public static greylistVote plugin;
 	public final Logger logger = Logger.getLogger("Minecraft");
 	public final greyBlockListener blockListener = new greyBlockListener(this);
+	public final greyPlayerListener loginListener = new greyPlayerListener(this);
 	protected FileConfiguration config;
-	private FileConfiguration usersConfig = null;
+	public FileConfiguration usersConfig = null;
 	private File usersFile = null;
 	
 	@Override
@@ -37,9 +39,10 @@ public class greylistVote extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		this.logger.info("[" + pdfFile.getName() + "] version " + pdfFile.getVersion() + " is enabled.");
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockListener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_IGNITE, this.blockListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_LOGIN, loginListener, Event.Priority.Normal, this);
 		this.config = this.getConfig();
 		this.config.set("required_votes", this.config.getInt("required_votes"));
 		this.saveConfig();
@@ -128,7 +131,7 @@ public class greylistVote extends JavaPlugin {
 					sender.sendMessage(args[0] + ChatColor.GOLD + " has been greylisted!");
 					return true;
 				}
-				if (sender.getName() == target.getName()) {
+				if (sender.getName().equalsIgnoreCase(target.getName())) {
 					// Player voting for self
 					sender.sendMessage(ChatColor.RED + "You cannot vote for yourself!");
 					return true;
@@ -156,7 +159,12 @@ public class greylistVote extends JavaPlugin {
 						chatPlayer.sendMessage(sender.getName() + ChatColor.GOLD + " voted for you to be greylisted!");
 					}
 				}
-				this.usersConfig.set(target.getName().toLowerCase() + ".votes", voteList + "," + sender.getName());
+				if (voteList.equals("")) {
+					this.usersConfig.set(target.getName().toLowerCase() + ".votes", sender.getName());
+				}
+				else {
+					this.usersConfig.set(target.getName().toLowerCase() + ".votes", voteList + "," + sender.getName());
+				}
 				int rep = 0;
 				if (voteArray != null) {
 					rep += voteArray.length + 1;
@@ -238,7 +246,12 @@ public class greylistVote extends JavaPlugin {
 						chatPlayer.sendMessage(sender.getName() + ChatColor.GOLD + " voted for you to be " + ChatColor.DARK_GRAY + " black-balled" + ChatColor.GOLD + " for " + ChatColor.RED + "griefing" + ChatColor.GOLD + "!");
 					}
 				}
-				this.usersConfig.set(target.getName().toLowerCase() + ".griefer", voteList + "," + sender.getName());
+				if (griefList.equals("")) {
+					this.usersConfig.set(target.getName().toLowerCase() + ".griefer", sender.getName());
+				}
+				else {
+					this.usersConfig.set(target.getName().toLowerCase() + ".griefer", voteList + "," + sender.getName());
+				}
 				int rep = 0;
 				if (voteArray != null) {
 					rep += voteArray.length;
@@ -246,7 +259,7 @@ public class greylistVote extends JavaPlugin {
 				if (griefArray != null) {
 					rep -= griefArray.length + 1;
 				}
-				if (rep < reqVotes) {
+				if (rep < reqVotes && target.hasPermission("greylistvote.approved")) {
 					// Enough votes received
 					this.setGriefer(target);
 				}
@@ -264,6 +277,9 @@ public class greylistVote extends JavaPlugin {
 				}
 				else {
 					sender.sendMessage(ChatColor.GOLD + "You have received votes from:");
+					int reputation = 0;
+					int reqVotes = config.getInt("required_votes");
+					boolean serverVote = false;
 					String[] voteArray = null;
 					String[] griefArray = null;
 					if (voteList != null) {
@@ -272,6 +288,13 @@ public class greylistVote extends JavaPlugin {
 							String votes = ChatColor.GREEN + "  Approvals: " + ChatColor.GOLD;
 							for (String vote : voteArray) {
 								votes = votes + vote + " ";
+								if (vote.equals("Server")) {
+									serverVote = true;
+								}
+								reputation ++;
+							}
+							if (serverVote) {
+								reputation = reqVotes;
 							}
 							sender.sendMessage(votes);
 						}
@@ -280,20 +303,20 @@ public class greylistVote extends JavaPlugin {
 						griefArray = griefList.split(",");
 						if (griefArray.length != 0) {
 							String votes = ChatColor.DARK_GRAY + "  Black-Balls: " + ChatColor.GOLD;
+							serverVote = false;
 							for (String vote : griefArray) {
 								votes = votes + vote + " ";
+								if (vote.equals("Server")) {
+									serverVote = true;
+								}
+								reputation--;
+							}
+							if (serverVote) {
+								reputation = -1;
 							}
 							sender.sendMessage(votes);
 						}
 					}
-					int reputation = 0;
-					if (voteArray != null) {
-						reputation += voteArray.length;
-					}
-					if (griefArray != null) {
-						reputation -=  griefArray.length;
-					}
-					int reqVotes = config.getInt("required_votes");
 					String repText = "";
 					if (reputation >= reqVotes) {
 						repText = " " + ChatColor.GREEN + reputation;
@@ -333,6 +356,9 @@ public class greylistVote extends JavaPlugin {
 				}
 				else {
 					sender.sendMessage(DN + ChatColor.GOLD + " has received votes from:");
+					int reputation = 0;
+					int reqVotes = config.getInt("required_votes");
+					boolean serverVote = false;
 					String[] voteArray = null;
 					String[] griefArray = null;
 					if (voteList != null) {
@@ -341,6 +367,13 @@ public class greylistVote extends JavaPlugin {
 							String votes = ChatColor.GREEN + "  Approvals: " + ChatColor.GOLD;
 							for (String vote : voteArray) {
 								votes = votes + vote + " ";
+								if (vote.equals("Server")) {
+									serverVote = true;
+								}
+								reputation ++;
+							}
+							if (serverVote) {
+								reputation = reqVotes;
 							}
 							sender.sendMessage(votes);
 						}
@@ -348,21 +381,21 @@ public class greylistVote extends JavaPlugin {
 					if (griefList != null) {
 						griefArray = griefList.split(",");
 						if (griefArray.length != 0) {
-							String votes = ChatColor.BLACK + "  Black-Balls: " + ChatColor.GOLD;
+							String votes = ChatColor.DARK_GRAY + "  Black-Balls: " + ChatColor.GOLD;
+							serverVote = false;
 							for (String vote : griefArray) {
 								votes = votes + vote + " ";
+								if (vote.equals("Server")) {
+									serverVote = true;
+								}
+								reputation--;
+							}
+							if (serverVote) {
+								reputation = -1;
 							}
 							sender.sendMessage(votes);
 						}
 					}
-					int reputation = 0;
-					if (voteArray != null) {
-						reputation += voteArray.length;
-					}
-					if (griefArray != null) {
-						reputation -=  griefArray.length;
-					}
-					int reqVotes = config.getInt("required_votes");
 					String repText = "";
 					if (reputation >= reqVotes) {
 						repText = " " + ChatColor.GREEN + reputation;
@@ -380,7 +413,8 @@ public class greylistVote extends JavaPlugin {
 	}
 	
 	public void setApproved(Player target) {
-		target.addAttachment(this, "greylistvote.approved", true);
+		PermissionAttachment attachment = target.addAttachment(this);
+		attachment.setPermission("greylistvote.approved", true);
 		Player[] onlinePlayers = getServer().getOnlinePlayers();
 		for (Player chatPlayer : onlinePlayers) {
 			if (chatPlayer.getName() != target.getName()) {
@@ -393,7 +427,8 @@ public class greylistVote extends JavaPlugin {
 	}
 	
 	public void setGriefer(Player target) {
-		target.addAttachment(this, "greylistvote.approved",false);
+		PermissionAttachment attachment = target.addAttachment(this);
+		attachment.setPermission("greylistvote.approved", false);
 		Player[] onlinePlayers = getServer().getOnlinePlayers();
 		for (Player chatPlayer : onlinePlayers) {
 			if (chatPlayer.getName() != target.getName()) {

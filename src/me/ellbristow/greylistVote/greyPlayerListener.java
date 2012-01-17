@@ -28,7 +28,7 @@ public class greyPlayerListener extends PlayerListener {
 			voteArray = voteList.split(",");
 			for (String vote : voteArray) {
 				rep++;
-				if (vote.equals("Server")) {
+				if (vote.equals("Server") || player.hasPermission("greylistvote.approved")) {
 					rep = reqVotes;
 					forceApprove = true;
 				}

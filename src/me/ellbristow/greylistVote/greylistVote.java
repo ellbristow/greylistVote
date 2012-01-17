@@ -64,6 +64,7 @@ public class greylistVote extends JavaPlugin {
 				if (sender.hasPermission("greylistvote.admin")) {
 					sender.sendMessage(ChatColor.GOLD + "Admin Commands:");
 					sender.sendMessage(ChatColor.GOLD + "  /glv setrep [req. votes] " + ChatColor.GRAY + ": Set required reputation");
+					sender.sendMessage(ChatColor.GOLD + "  /clearvotes [player] " + ChatColor.GRAY + ": Remove all 'Server' votes");
 				}
 				return true;
 			}
@@ -88,10 +89,84 @@ public class greylistVote extends JavaPlugin {
 				this.config.set("required_votes", reqVotes);
 				this.saveConfig();
 				sender.sendMessage(ChatColor.GOLD + "Reputation requirement now set to " + ChatColor.WHITE + args[1]);
-				sender.sendMessage(ChatColor.GOLD + "Player approval will not be updated until they receive their next vote.");
+				sender.sendMessage(ChatColor.GOLD + "Player approval will not be updated until they receive their next vote ro login.");
 				return true;
 			}
 			return false;
+		}
+		else if (commandLabel.equalsIgnoreCase("clearserver")) {
+			if (!sender.hasPermission("greylistvote.admin")) {
+				sender.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+				return false;
+			}
+			if (args.length == 0) {
+				sender.sendMessage(ChatColor.RED + "You must specify a player!");
+				return false;
+			}
+			Player target = (Player) getServer().getOfflinePlayer(args[0]);
+			if (target == null) {
+				sender.sendMessage(ChatColor.RED + "Player " + ChatColor.WHITE + args[0] + ChatColor.RED + "not found!");
+				return true;
+			}
+			String griefList = this.usersConfig.getString(target.getName().toLowerCase() + ".griefer", null);
+			String voteList = this.usersConfig.getString(target.getName().toLowerCase() + ".votes", null);
+			String newVoteList = null;
+			String newGriefList = null;
+			String[] voteArray = null;
+			String[] griefArray = null;
+			if (griefList == null && voteList == null) {
+				sender.sendMessage(ChatColor.RED + "Player " + ChatColor.WHITE + args[0] + ChatColor.RED + "does not have any votes!");
+				return true;
+			}
+			if (voteList != null) {
+				voteArray = voteList.split(",");
+				for (String vote : voteArray) {
+					if (!vote.equals("Server")) {
+						newVoteList += "," + vote;
+					}
+				}
+				if (newVoteList != null) {
+					newVoteList = newVoteList.replaceFirst(",","");
+				}
+				usersConfig.set(target.getName().toLowerCase() + ".votes", newVoteList);
+			}
+			if (griefList != null) {
+				griefArray = griefList.split(",");
+				for (String vote : griefArray) {
+					if (!vote.equals("Server")) {
+						newGriefList += "," + vote;
+					}
+				}
+				if (newGriefList != null) {
+					newGriefList = newGriefList.replaceFirst(",","");
+				}
+				usersConfig.set(target.getName().toLowerCase() + ".griefer", newGriefList);
+			}
+			saveUsersConfig();
+			int rep = 0;
+			int reqVotes = config.getInt("required_votes");
+			voteArray = null;
+			griefArray = null;
+			if (newVoteList != null) {
+				voteArray = voteList.split(",");
+				for (@SuppressWarnings("unused") String vote : voteArray) {
+					rep++;
+				}
+			}
+			if (griefList != null) {
+				griefArray = griefList.split(",");
+				for (@SuppressWarnings("unused") String vote : griefArray) {
+					rep--;
+				}
+			}
+			sender.sendMessage(ChatColor.GOLD + "'Server' votes removed from " + ChatColor.WHITE + target.getName());
+			target.sendMessage(ChatColor.GOLD + "Your 'Server' greylist/black-ball votes removed!");
+			if (rep >= reqVotes && !target.hasPermission("greylistvote.approved")) {
+				setApproved(target);
+			}
+			else if (rep < reqVotes && target.hasPermission("greylistvote.approved")) {
+				setGriefer(target);
+			}
 		}
 		else if (commandLabel.equalsIgnoreCase("greylist") || commandLabel.equalsIgnoreCase("gl")) {
 			if (args.length != 1) {

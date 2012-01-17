@@ -346,14 +346,15 @@ public class greylistVote extends JavaPlugin {
 			if (args.length == 0) {
 				String voteList = this.usersConfig.getString(sender.getName().toLowerCase() + ".votes", null);
 				String griefList = this.usersConfig.getString(sender.getName().toLowerCase() + ".griefer", null);
+				int reqVotes = config.getInt("required_votes");
 				if (voteList == null && griefList == null) {
 					sender.sendMessage(ChatColor.GOLD + "You have not received any votes.");
 					sender.sendMessage(ChatColor.GOLD + "Current Reputation: " + ChatColor.WHITE + "0");
+					sender.sendMessage(ChatColor.GOLD + "Required Reputation: " + ChatColor.WHITE + reqVotes);
 				}
 				else {
 					sender.sendMessage(ChatColor.GOLD + "You have received votes from:");
 					int reputation = 0;
-					int reqVotes = config.getInt("required_votes");
 					boolean serverVote = false;
 					String[] voteArray = null;
 					String[] griefArray = null;
@@ -425,14 +426,15 @@ public class greylistVote extends JavaPlugin {
 				}
 				String voteList = this.usersConfig.getString(target.toLowerCase() + ".votes", null);
 				String griefList = this.usersConfig.getString(target.toLowerCase() + ".griefer", null);
+				int reqVotes = config.getInt("required_votes");
 				if (voteList == null && griefList == null) {
 					sender.sendMessage(DN + ChatColor.GOLD + " has not received any votes.");
 					sender.sendMessage(ChatColor.GOLD + "Current Reputation: " + ChatColor.WHITE + "0");
+					sender.sendMessage(ChatColor.GOLD + "Required Reputation: " + ChatColor.WHITE + reqVotes);
 				}
 				else {
 					sender.sendMessage(DN + ChatColor.GOLD + " has received votes from:");
 					int reputation = 0;
-					int reqVotes = config.getInt("required_votes");
 					boolean serverVote = false;
 					String[] voteArray = null;
 					String[] griefArray = null;

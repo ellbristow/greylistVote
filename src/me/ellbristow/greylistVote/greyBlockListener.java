@@ -21,8 +21,8 @@ public class greyBlockListener extends BlockListener {
 	
 	public void onBlockPlace (BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		if (player != null && !player.hasPermission("greylistvote.approved")) {
-			player.sendMessage(ChatColor.RED + "You are not yet approved to place blocks!");
+		if (player != null && !player.hasPermission("greylistvote.approved") && !player.hasPermission("greylistvote.build")) {
+			player.sendMessage(ChatColor.RED + "Your reputation is too low to place blocks!");
 			if (event.getBlockPlaced().getTypeId() == 323) {
 				ItemStack items = new ItemStack(Material.SIGN, event.getPlayer().getItemInHand().getAmount() + 1);
 				event.getPlayer().setItemInHand(items);
@@ -33,8 +33,8 @@ public class greyBlockListener extends BlockListener {
 	
 	public void onBlockBreak (BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		if (player != null && !player.hasPermission("greylistvote.approved")) {
-			player.sendMessage(ChatColor.RED + "You are not yet approved to destroy blocks!");
+		if (player != null && !player.hasPermission("greylistvote.approved") && !player.hasPermission("greylistvote.build")) {
+			player.sendMessage(ChatColor.RED + "Your reputation is too low to destroy blocks!");
 			Block block = event.getBlock();
 			event.setCancelled(true);
 			if (block.getTypeId() == 63 || block.getTypeId() == 68) {
@@ -48,8 +48,8 @@ public class greyBlockListener extends BlockListener {
 	
 	public void onBlockIgnite (BlockIgniteEvent event) {
 		Player player = event.getPlayer();
-		if (player != null && !player.hasPermission("greylistvote.approved")) {
-			player.sendMessage(ChatColor.RED + "Charlie says stop playing with fire!");
+		if (player != null && !player.hasPermission("greylistvote.approved") && !player.hasPermission("greylistvote.build")) {
+			player.sendMessage(ChatColor.RED + "People with low reputation shouldn't play with fire!");
 			event.setCancelled(true);
 		}
 	}

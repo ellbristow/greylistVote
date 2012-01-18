@@ -43,11 +43,11 @@ public class greyPlayerListener extends PlayerListener {
 				}
 			}
 		}
-		if (rep >= reqVotes && !player.hasPermission("greylistvote.approved")) {
-			player.addAttachment(plugin, "greylistvote.approved", true);
+		if (rep >= reqVotes || player.hasPermission("greylistvote.approved")) {
+			player.addAttachment(plugin, "greylistvote.build", true);
 		}
-		else if (rep < reqVotes && player.hasPermission("greylistvote.approved")) {
-			player.addAttachment(plugin, "greylistvote.approved", false);
+		else if (rep < reqVotes && !player.hasPermission("greylistvote.approved")) {
+			player.addAttachment(plugin, "greylistvote.build", false);
 		}
 	}
 }

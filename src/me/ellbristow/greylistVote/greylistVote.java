@@ -294,8 +294,10 @@ public class greylistVote extends JavaPlugin {
 				if (voteArray.length != 0) {
 					rep += voteArray.length;
 				}
-				if (griefArray.length != 0) {
-					rep -= griefArray.length;
+				if (griefArray != null) {
+					if (griefArray.length != 0) {
+						rep -= griefArray.length;
+					}
 				}
 				if (rep >= reqVotes && !target.hasPermission("greylistvote.build") && !target.hasPermission("greylistvote.approved")) {
 					// Enough votes received

@@ -3,10 +3,12 @@ package me.ellbristow.greylistVote;
 import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-public class greyPlayerListener extends PlayerListener {
+public class greyPlayerListener implements Listener {
 	
 	public static greylistVote plugin;
 	public final Logger logger = Logger.getLogger("Minecraft");
@@ -15,6 +17,7 @@ public class greyPlayerListener extends PlayerListener {
 		plugin = instance;
 	}
 	
+	@EventHandler (priority = EventPriority.NORMAL)
 	public void onPlayerLogin (PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 		String voteList = plugin.usersConfig.getString(player.getName().toLowerCase() + ".votes", null);

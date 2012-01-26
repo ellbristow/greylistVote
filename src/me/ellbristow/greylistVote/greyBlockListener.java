@@ -5,13 +5,15 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class greyBlockListener extends BlockListener {
+public class greyBlockListener implements Listener {
 	
 	public static greylistVote plugin;
 	
@@ -19,6 +21,7 @@ public class greyBlockListener extends BlockListener {
 		plugin = instance;
 	}
 	
+	@EventHandler (priority = EventPriority.NORMAL)
 	public void onBlockPlace (BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		if (player != null && !player.hasPermission("greylistvote.approved") && !player.hasPermission("greylistvote.build")) {
@@ -31,6 +34,7 @@ public class greyBlockListener extends BlockListener {
 		}
 	}
 	
+	@EventHandler (priority = EventPriority.NORMAL)
 	public void onBlockBreak (BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		if (player != null && !player.hasPermission("greylistvote.approved") && !player.hasPermission("greylistvote.build")) {
@@ -46,6 +50,7 @@ public class greyBlockListener extends BlockListener {
 		}
 	}
 	
+	@EventHandler (priority = EventPriority.NORMAL)
 	public void onBlockIgnite (BlockIgniteEvent event) {
 		Player player = event.getPlayer();
 		if (player != null && !player.hasPermission("greylistvote.approved") && !player.hasPermission("greylistvote.build")) {

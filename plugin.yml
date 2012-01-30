@@ -1,7 +1,8 @@
 name: GreylistVote
 main: me.ellbristow.greylistVote.greylistVote
-version: 1.4
+version: 1.5
 author: ellbristow
+dev-url: http://dev.bukkit.org/server-mods/greylistvote
 description: >
              Control the build rights of new players using votes
 commands:

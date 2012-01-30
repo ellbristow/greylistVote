@@ -41,7 +41,8 @@ public class greylistVote extends JavaPlugin {
 		pm.registerEvents(blockListener, this);
 		pm.registerEvents(loginListener, this);
 		this.config = this.getConfig();
-		this.config.set("required_votes", this.config.getInt("required_votes"));
+		this.config.set("required_votes", this.config.getInt("required_votes", 2));
+		this.config.set("no_pvp", this.config.getBoolean("no_pvp", true));
 		this.saveConfig();
 		this.usersConfig = this.getUsersConfig();
 	}
@@ -422,7 +423,7 @@ public class greylistVote extends JavaPlugin {
 			}
 		}
 		else if (commandLabel.equalsIgnoreCase("votelist") || commandLabel.equalsIgnoreCase("glvlist")) {
-			if (args.length == 0) {
+			if (args.equals(null) || args.length == 0) {
 				String voteList = this.usersConfig.getString(sender.getName().toLowerCase() + ".votes", null);
 				String griefList = this.usersConfig.getString(sender.getName().toLowerCase() + ".griefer", null);
 				int reqVotes = config.getInt("required_votes");

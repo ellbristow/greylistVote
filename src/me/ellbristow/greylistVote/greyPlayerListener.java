@@ -2,10 +2,13 @@ package me.ellbristow.greylistVote;
 
 import java.util.logging.Logger;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 public class greyPlayerListener implements Listener {
@@ -51,6 +54,26 @@ public class greyPlayerListener implements Listener {
 		}
 		else if (rep < reqVotes && !player.hasPermission("greylistvote.approved")) {
 			player.addAttachment(plugin, "greylistvote.build", false);
+		}
+	}
+	
+	@EventHandler (priority = EventPriority.NORMAL)
+	public void onPlayerPvP (EntityDamageEvent event) {
+		if (!event.isCancelled()) {
+			// Stop PvP for guests
+			if (event instanceof EntityDamageByEntityEvent) {
+				EntityDamageByEntityEvent pvpEvent = (EntityDamageByEntityEvent)event;
+				Entity entity = pvpEvent.getEntity();
+				Entity damager = pvpEvent.getDamager();
+				if (entity instanceof Player && damager instanceof Player) {
+					// Player is damaged by player
+					Player player = (Player) damager;
+					if (!player.hasPermission("greylistvote.approved")) {
+						// Player not allowed to PvP, Cancel event
+						event.setCancelled(true);
+					}
+				}
+			}
 		}
 	}
 }

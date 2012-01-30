@@ -7,5 +7,8 @@
 # 
 # required_votes: If Approval votes - Griefer votes is greater than this,
 # player will be approved. If it drops below, they will lose build rights.
+# 
+# no_pvp: Players who are not approved cannot PVP (true|false)
 
 required_votes: 2
+no_pvp: true

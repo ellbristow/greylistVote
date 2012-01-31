@@ -191,6 +191,9 @@ public class greylistVote extends JavaPlugin {
 				return false;
 			}
 			else {
+				if (!sender.hasPermission("greylistvote.vote")) {
+					sender.sendMessage(ChatColor.RED + "You do not have permission to vote!");
+				}
 				Player target = getServer().getOfflinePlayer(args[0]).getPlayer();
 				if (target == null) {
 					// Player not online
@@ -306,6 +309,9 @@ public class greylistVote extends JavaPlugin {
 			}
 		}
 		else if (commandLabel.equalsIgnoreCase("griefer")) {
+			if (!sender.hasPermission("greylistvote.griefer")) {
+				sender.sendMessage(ChatColor.RED + "You do not have permission to vote!");
+			}
 			if (args.length != 1) {
 				// No player specified or too many arguments
 				return false;

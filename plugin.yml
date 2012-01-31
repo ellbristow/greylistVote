@@ -1,6 +1,6 @@
 name: GreylistVote
 main: me.ellbristow.greylistVote.greylistVote
-version: 1.5
+version: 1.5.1
 author: ellbristow
 dev-url: http://dev.bukkit.org/server-mods/greylistvote
 description: >
@@ -22,10 +22,6 @@ commands:
   glv:
     description: View GreylistVote commands
     usage: "Please see /glv for GreylistVote commands"
-  clearserver:
-    description: Clear all "Server" votes
-    usage: "Please see /glv for GreylistVote commands"
-    permission: greylistvote.admin
 permissions:
   greylistvote.*:
     description: Access to all GreylistVote commands

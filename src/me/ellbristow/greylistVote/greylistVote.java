@@ -288,7 +288,11 @@ public class greylistVote extends JavaPlugin {
 					String newGriefList = null;
 					for (String vote : griefArray) {
 						if (!vote.equalsIgnoreCase(sender.getName())) {
-							newGriefList += "," + vote;
+							if (newGriefList != null) {
+								newGriefList += "," + vote;
+							} else {
+								newGriefList = vote;
+							}
 						}
 					}
 					if (newGriefList != null) {
@@ -421,7 +425,11 @@ public class greylistVote extends JavaPlugin {
 					String newVoteList = null;
 					for (String vote : voteArray) {
 						if (!vote.equalsIgnoreCase(sender.getName())) {
-							newVoteList += "," + vote;
+							if (newVoteList != null) {
+								newVoteList += "," + vote;
+							} else {
+								newVoteList = vote;
+							}
 						}
 					}
 					if (newVoteList != null) {

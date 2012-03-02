@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,34 +18,32 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class greylistVote extends JavaPlugin {
 	
-	public static greylistVote plugin;
-	public final Logger logger = Logger.getLogger("Minecraft");
-	public final greyBlockListener blockListener = new greyBlockListener(this);
-	public final greyPlayerListener loginListener = new greyPlayerListener(this);
-	protected FileConfiguration config;
-	public FileConfiguration usersConfig = null;
-	private File usersFile = null;
+    public static greylistVote plugin;
+    public Logger logger;
+    public final greyBlockListener blockListener = new greyBlockListener(this);
+    public final greyPlayerListener loginListener = new greyPlayerListener(this);
+    protected FileConfiguration config;
+    public FileConfiguration usersConfig = null;
+    private File usersFile = null;
 	
 	@Override
 	public void onDisable() {
-		PluginDescriptionFile pdfFile = this.getDescription();
-		this.logger.info("[" + pdfFile.getName() + "] is now disabled.");
 	}
 
 	@Override
 	public void onEnable() {
-		PluginDescriptionFile pdfFile = this.getDescription();
-		this.logger.info("[" + pdfFile.getName() + "] version " + pdfFile.getVersion() + " is enabled.");
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(blockListener, this);
-		pm.registerEvents(loginListener, this);
-		this.config = this.getConfig();
-		this.config.set("required_votes", this.config.getInt("required_votes", 2));
-		this.config.set("no_pvp", this.config.getBoolean("no_pvp", true));
-		this.saveConfig();
-		this.usersConfig = this.getUsersConfig();
+            logger = getLogger();
+            PluginManager pm = getServer().getPluginManager();
+            pm.registerEvents(blockListener, this);
+            pm.registerEvents(loginListener, this);
+            this.config = this.getConfig();
+            this.config.set("required_votes", this.config.getInt("required_votes", 2));
+            this.config.set("no_pvp", this.config.getBoolean("no_pvp", true));
+            this.saveConfig();
+            this.usersConfig = this.getUsersConfig();
 	}
 	
+        @Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (commandLabel.equalsIgnoreCase("glv")) {
 			if (args.length == 0) {
@@ -161,7 +158,7 @@ public class greylistVote extends JavaPlugin {
 					} else {
 						Player[] onlinePlayers = getServer().getOnlinePlayers();
 						for (Player chatPlayer : onlinePlayers) {
-							if (chatPlayer.getName() != sender.getName()) {
+							if (!chatPlayer.getName().equals(sender.getName())) {
 								chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation has been reset to 0!");
 							}
 						}
@@ -195,7 +192,7 @@ public class greylistVote extends JavaPlugin {
 					} else {
 						Player[] onlinePlayers = getServer().getOnlinePlayers();
 						for (Player chatPlayer : onlinePlayers) {
-							if (chatPlayer.getName() != sender.getName()) {
+							if (!chatPlayer.getName().equals(sender.getName())) {
 								chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation has been reset to 0!");
 							}
 						}
@@ -237,7 +234,7 @@ public class greylistVote extends JavaPlugin {
 					sender.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation was set to " + reqVotes + "!");
 					Player[] onlinePlayers = getServer().getOnlinePlayers();
 					for (Player chatPlayer : onlinePlayers) {
-						if (chatPlayer.getName() != target.getName()) {
+						if (!chatPlayer.getName().equals(target.getName())) {
 							chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation was set to " + reqVotes + " by the Server!");
 						}
 						else {
@@ -309,10 +306,10 @@ public class greylistVote extends JavaPlugin {
 				Player[] onlinePlayers = getServer().getOnlinePlayers();
 				// Tell everyone about the reputation change
 				for (Player chatPlayer : onlinePlayers) {
-					if (chatPlayer.getName() != target.getName() && chatPlayer.getName() != sender.getName()) {
+					if (!chatPlayer.getName().equals(target.getName()) && !chatPlayer.getName().equals(sender.getName())) {
 						chatPlayer.sendMessage(sender.getName() + ChatColor.GOLD + " increased " + ChatColor.WHITE + target.getName() + ChatColor.GOLD + "'s reputation!");
 					}
-					else if (chatPlayer.getName() != sender.getName()) {
+					else if (!chatPlayer.getName().equals(sender.getName())) {
 						chatPlayer.sendMessage(sender.getName() + ChatColor.GREEN + " increased your reputation!");
 						chatPlayer.sendMessage(ChatColor.GOLD + "Type " + ChatColor.WHITE + "/votelist" + ChatColor.GOLD + " to check your reputation.");
 					}
@@ -340,7 +337,7 @@ public class greylistVote extends JavaPlugin {
 				}
 				else if (!target.isOnline() && rep >= reqVotes) {
 					for (Player chatPlayer : onlinePlayers) {
-						if (chatPlayer.getName() != target.getName()) {
+						if (!chatPlayer.getName().equals(target.getName())) {
 							chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation has reached " + reqVotes + "!");
 							chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + " can now build!");
 						}
@@ -390,7 +387,7 @@ public class greylistVote extends JavaPlugin {
 					sender.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation was set to -1!");
 					Player[] onlinePlayers = getServer().getOnlinePlayers();
 					for (Player chatPlayer : onlinePlayers) {
-						if (chatPlayer.getName() != target.getName()) {
+						if (!chatPlayer.getName().equals(target.getName())) {
 							chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation was set to -1 by the Server!");
 						}
 						else {
@@ -403,7 +400,7 @@ public class greylistVote extends JavaPlugin {
 					this.saveUsersConfig();
 					return true;
 				}
-				if (sender.getName() == target.getName()) {
+				if (!sender.getName().equals(target.getName())) {
 					// Player voting for self
 					sender.sendMessage(ChatColor.RED + "You cannot vote for yourself!");
 					return true;
@@ -445,10 +442,10 @@ public class greylistVote extends JavaPlugin {
 				sender.sendMessage(ChatColor.GOLD + "You have reduced " + ChatColor.WHITE + target.getName() + ChatColor.GOLD + "'s reputation!");
 				Player[] onlinePlayers = getServer().getOnlinePlayers();
 				for (Player chatPlayer : onlinePlayers) {
-					if (chatPlayer.getName() != target.getName() && chatPlayer.getName() != sender.getName()) {
+					if (!chatPlayer.getName().equals(target.getName()) && !chatPlayer.getName().equals(sender.getName())) {
 						chatPlayer.sendMessage(sender.getName() + ChatColor.GOLD + " reduced " + ChatColor.WHITE + target.getName() + ChatColor.GOLD + "'s reputation!");
 					}
-					else if (chatPlayer.getName() != sender.getName()) {
+					else if (!chatPlayer.getName().equals(sender.getName())) {
 						chatPlayer.sendMessage(sender.getName() + ChatColor.RED + " reduced your reputation!");
 						chatPlayer.sendMessage(ChatColor.GOLD + "Type " + ChatColor.WHITE + "/votelist" + ChatColor.GOLD + " to check your reputation.");
 					}
@@ -474,7 +471,7 @@ public class greylistVote extends JavaPlugin {
 				}
 				else if (!target.isOnline() && rep < reqVotes) {
 					for (Player chatPlayer : onlinePlayers) {
-						if (chatPlayer.getName() != target.getName()) {
+						if (!chatPlayer.getName().equals(target.getName())) {
 							chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation has dropped below " + reqVotes + "!");
 						}
 					}
@@ -484,7 +481,7 @@ public class greylistVote extends JavaPlugin {
 			}
 		}
 		else if (commandLabel.equalsIgnoreCase("votelist") || commandLabel.equalsIgnoreCase("glvlist")) {
-			if (args.equals(null) || args.length == 0) {
+			if (args == null || args.length == 0) {
 				String voteList = this.usersConfig.getString(sender.getName().toLowerCase() + ".votes", null);
 				String griefList = this.usersConfig.getString(sender.getName().toLowerCase() + ".griefer", null);
 				int reqVotes = config.getInt("required_votes");
@@ -636,7 +633,7 @@ public class greylistVote extends JavaPlugin {
 		Player[] onlinePlayers = getServer().getOnlinePlayers();
 		int reqVotes = config.getInt("required_votes");
 		for (Player chatPlayer : onlinePlayers) {
-			if (chatPlayer.getName() != target.getName()) {
+			if (!chatPlayer.getName().equals(target.getName())) {
 				chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation has reached " + reqVotes + "!");
 				chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + " can now build!");
 			}
@@ -653,7 +650,7 @@ public class greylistVote extends JavaPlugin {
 		Player[] onlinePlayers = getServer().getOnlinePlayers();
 		int reqVotes = config.getInt("required_votes");
 		for (Player chatPlayer : onlinePlayers) {
-			if (chatPlayer.getName() != target.getName()) {
+			if (!chatPlayer.getName().equals(target.getName())) {
 				chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + "'s reputation has dropped below " + reqVotes + "!");
 				chatPlayer.sendMessage(target.getName() + ChatColor.GOLD + " can no longer build!");
 			}

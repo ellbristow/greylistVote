@@ -1,0 +1,43 @@
+name: GreylistVote
+main: me.ellbristow.greylistVote.greylistVote
+version: 1.5.4
+author: ellbristow
+dev-url: http://dev.bukkit.org/server-mods/greylistvote
+description: >
+             Control the build rights of new players using votes
+commands:
+  greylist:
+    description: Increase a player's reputation
+    permission: greylistvote.vote
+    usage: "Please see /glv for GreylistVote commands"
+    aliases: [gl, trust]
+  votelist:
+    description: Show reputation and who has already voted for the player.
+    usage: "Please see /glv for GreylistVote commands"
+    aliases: glvlist
+  griefer:
+    description: Decrease a player's reputation.
+    permission: greylistvote.griefer
+    usage: "Please see /glv for GreylistVote commands"
+  glv:
+    description: View GreylistVote commands
+    usage: "Please see /glv for GreylistVote commands"
+permissions:
+  greylistvote.*:
+    description: Access to all GreylistVote commands
+    children:
+      greylistvote.admin: true
+      greylistvote.approved: true
+      greylistvote.vote: true
+      greylistvote.list: true
+      greylistvote.griefer: true
+  greylistvote.admin:
+    description: Access to /glv admin commands.
+  greylistvote.approved:
+    description: Player is approved to build.
+  greylistvote.vote:
+    description: Player can vote for a greylisted player.
+  greylistvote.griefer:
+    description: Access to the /griefer command.
+  greylistvote.build:
+    description: Used internally to control build rights.

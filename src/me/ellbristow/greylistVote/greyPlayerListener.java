@@ -1,7 +1,6 @@
 package me.ellbristow.greylistVote;
 
 import java.util.logging.Logger;
-
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

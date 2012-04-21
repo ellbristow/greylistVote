@@ -219,7 +219,7 @@ public class greylistVote extends JavaPlugin {
 					return true;
 				}
 				OfflinePlayer target = getServer().getOfflinePlayer(args[0]);
-				if (!target.hasPlayedBefore()) {
+				if (!target.hasPlayedBefore() && !target.isOnline()) {
 					// Player not online
 					sender.sendMessage(args[0] + ChatColor.RED + " not found!");
 					return false;

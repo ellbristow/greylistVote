@@ -64,6 +64,7 @@ public class greylistVote extends JavaPlugin {
 				if (sender.hasPermission("greylistvote.admin")) {
 					sender.sendMessage(ChatColor.RED + "Admin Commands:");
 					sender.sendMessage(ChatColor.GOLD + "  /glv setrep [req. rep] " + ChatColor.GRAY + ": Set required reputation");
+                                        sender.sendMessage(ChatColor.GOLD + "  /glv toggle [pvp|approvedvote] " + ChatColor.GRAY + ": Toggle true/false config options");
 					sender.sendMessage(ChatColor.GOLD + "  /glv clearserver [player] " + ChatColor.GRAY + ": Remove player's Server votes");
 					sender.sendMessage(ChatColor.GOLD + "  /glv clearall [player] " + ChatColor.GRAY + ": Remove all player's votes");
 				}
@@ -233,6 +234,7 @@ public class greylistVote extends JavaPlugin {
 				}
 				
 			}
+                        sender.sendMessage(ChatColor.RED + "Command not recognised!");
 			return false;
 		}
 		else if (commandLabel.equalsIgnoreCase("greylist") || commandLabel.equalsIgnoreCase("gl") || commandLabel.equalsIgnoreCase("trust")) {

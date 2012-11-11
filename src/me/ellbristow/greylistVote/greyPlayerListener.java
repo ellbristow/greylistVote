@@ -1,8 +1,9 @@
 package me.ellbristow.greylistVote;
 
-import java.util.logging.Logger;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -13,7 +14,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 public class greyPlayerListener implements Listener {
 	
 	public static greylistVote plugin;
-	public final Logger logger = Logger.getLogger("Minecraft");
 	
 	public greyPlayerListener (greylistVote instance) {
 		plugin = instance;
@@ -25,16 +25,15 @@ public class greyPlayerListener implements Listener {
 		String voteList = plugin.usersConfig.getString(player.getName().toLowerCase() + ".votes", null);
 		String griefList = plugin.usersConfig.getString(player.getName().toLowerCase() + ".griefer", null);
 		int rep = 0;
-		int reqVotes = plugin.config.getInt("required_votes");
 		boolean forceApprove = false;
-		String[] voteArray = null;
-		String[] griefArray = null;
+		String[] voteArray;
+		String[] griefArray;
 		if (voteList != null) {
 			voteArray = voteList.split(",");
 			for (String vote : voteArray) {
 				rep++;
 				if (vote.equals("Server") || player.hasPermission("greylistvote.approved")) {
-					rep = reqVotes;
+					rep = plugin.approvalVotes;
 					forceApprove = true;
 				}
 			}
@@ -48,17 +47,17 @@ public class greyPlayerListener implements Listener {
 				}
 			}
 		}
-		if (rep >= reqVotes || player.hasPermission("greylistvote.approved")) {
+		if (rep >= plugin.approvalVotes || player.hasPermission("greylistvote.approved")) {
 			player.addAttachment(plugin, "greylistvote.build", true);
 		}
-		else if (rep < reqVotes && !player.hasPermission("greylistvote.approved")) {
+		else if (rep < plugin.approvalVotes && !player.hasPermission("greylistvote.approved")) {
 			player.addAttachment(plugin, "greylistvote.build", false);
 		}
 	}
 	
 	@EventHandler (priority = EventPriority.NORMAL)
 	public void onPlayerPvP (EntityDamageEvent event) {
-		if (!event.isCancelled()) {
+		if (!event.isCancelled() && plugin.noPVP) {
 			// Stop PvP for guests
 			if (event instanceof EntityDamageByEntityEvent) {
 				EntityDamageByEntityEvent pvpEvent = (EntityDamageByEntityEvent)event;
@@ -67,11 +66,22 @@ public class greyPlayerListener implements Listener {
 				if (entity instanceof Player && damager instanceof Player) {
 					// Player is damaged by player
 					Player player = (Player) damager;
-					if (!player.hasPermission("greylistvote.approved")) {
+                                        Player target = (Player) entity;
+					if (!player.hasPermission("greylistvote.approved") || !target.hasPermission("greylistvote.approved")) {
 						// Player not allowed to PvP, Cancel event
 						event.setCancelled(true);
 					}
-				}
+				} else if (damager instanceof Projectile) {
+                                    LivingEntity shooter = ((Projectile)damager).getShooter();
+                                    if (shooter instanceof Player) {
+                                        Player player = (Player)entity;
+                                        if (!player.hasPermission("greylistvote.approved")) {
+                                            // Player not approved, protect from Projectile
+                                            ((Projectile)damager).setBounce(true);
+                                            event.setCancelled(true);
+                                        }
+                                    }
+                                }
 			}
 		}
 	}

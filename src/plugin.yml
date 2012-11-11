@@ -1,6 +1,6 @@
 name: GreylistVote
 main: me.ellbristow.greylistVote.greylistVote
-version: 1.5.4
+version: 1.5.5
 author: ellbristow
 dev-url: http://dev.bukkit.org/server-mods/greylistvote
 description: >
@@ -14,11 +14,12 @@ commands:
   votelist:
     description: Show reputation and who has already voted for the player.
     usage: "Please see /glv for GreylistVote commands"
-    aliases: glvlist
+    aliases: [glvlist, rep]
   griefer:
     description: Decrease a player's reputation.
     permission: greylistvote.griefer
     usage: "Please see /glv for GreylistVote commands"
+    aliases: [distrust]
   glv:
     description: View GreylistVote commands
     usage: "Please see /glv for GreylistVote commands"

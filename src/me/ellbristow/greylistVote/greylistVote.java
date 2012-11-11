@@ -200,7 +200,33 @@ public class greylistVote extends JavaPlugin {
 					}
 					this.saveUsersConfig();
 					return true;
-				}
+				} else if (args[0].equalsIgnoreCase("toggle")) {
+                                    if (args[1].equalsIgnoreCase("pvp")) {
+                                        if (noPVP) {
+                                            noPVP = false;
+                                            sender.sendMessage(ChatColor.GOLD + "Unapproved players are no longer protected against PVP.");
+                                        } else {
+                                            noPVP = true;
+                                            sender.sendMessage(ChatColor.GOLD + "Unapproved players are now protected against PVP.");
+                                        }
+                                        config.set("no_pvp", noPVP);
+                                        saveConfig();
+                                    } else if (args[1].equalsIgnoreCase("approvedvote")) {
+                                        if (allowApprovedVote) {
+                                            allowApprovedVote = false;
+                                            sender.sendMessage(ChatColor.GOLD + "Only player with permission may now vote!");
+                                        } else {
+                                            allowApprovedVote = true;
+                                            sender.sendMessage(ChatColor.GOLD + "All approved players may now vote!");
+                                        }
+                                        config.set("allow_all_approved_to_vote", allowApprovedVote);
+                                        saveConfig();
+                                    } else {
+                                        sender.sendMessage(ChatColor.RED + "Toggle option not recognised!");
+                                        sender.sendMessage(ChatColor.RED + "Allowed toggles: pvp, approvedvote");
+					return false;
+                                    }
+                                }
 				else {
 					sender.sendMessage(ChatColor.RED + "Command not recognised!");
 					return false;

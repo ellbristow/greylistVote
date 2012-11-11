@@ -12,3 +12,4 @@
 
 required_votes: 2
 no_pvp: true
+allow_all_approved_to_vote: false

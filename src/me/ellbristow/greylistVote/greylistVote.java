@@ -25,6 +25,7 @@ public class greylistVote extends JavaPlugin {
     private File usersFile = null;
     protected int approvalVotes;
     protected boolean noPVP;
+    private boolean allowApprovedVote;
 	
 	@Override
 	public void onDisable() {
@@ -40,6 +41,8 @@ public class greylistVote extends JavaPlugin {
             this.config.set("required_votes", approvalVotes);
             noPVP = this.config.getBoolean("no_pvp", true);
             this.config.set("no_pvp", noPVP);
+            allowApprovedVote = this.config.getBoolean("allow_all_approved_to_vote", false);
+            this.config.set("allow_all_approved_to_vote", allowApprovedVote);
             this.saveConfig();
             this.usersConfig = this.getUsersConfig();
 	}
@@ -212,7 +215,7 @@ public class greylistVote extends JavaPlugin {
 				return false;
 			}
 			else {
-				if (!sender.hasPermission("greylistvote.vote")) {
+				if (!sender.hasPermission("greylistvote.vote") && !(allowApprovedVote && sender.hasPermission("greylistvote.approved"))) {
 					sender.sendMessage(ChatColor.RED + "You do not have permission to vote!");
 					return true;
 				}
@@ -341,7 +344,7 @@ public class greylistVote extends JavaPlugin {
 			}
 		}
 		else if (commandLabel.equalsIgnoreCase("griefer") || commandLabel.equalsIgnoreCase("distrust")) {
-			if (!sender.hasPermission("greylistvote.griefer")) {
+			if (!sender.hasPermission("greylistvote.griefer") && !(allowApprovedVote && sender.hasPermission("greylistvote.approved"))) {
 				sender.sendMessage(ChatColor.RED + "You do not have permission to vote!");
 				return true;
 			}

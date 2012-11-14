@@ -71,7 +71,7 @@ public class greyPlayerListener implements Listener {
 						// Player not allowed to PvP, Cancel event
 						event.setCancelled(true);
 					}
-				} else if (damager instanceof Projectile) {
+				} else if (entity instanceof Player && damager instanceof Projectile) {
                                     LivingEntity shooter = ((Projectile)damager).getShooter();
                                     if (shooter instanceof Player) {
                                         Player player = (Player)entity;

@@ -243,7 +243,7 @@ public class greylistVote extends JavaPlugin {
 				return false;
 			}
 			else {
-				if (!sender.hasPermission("greylistvote.vote") && !(allowApprovedVote && sender.hasPermission("greylistvote.approved"))) {
+				if (!sender.hasPermission("greylistvote.vote") && !(allowApprovedVote && sender.hasPermission("greylistvote.build"))) {
 					sender.sendMessage(ChatColor.RED + "You do not have permission to vote!");
 					return true;
 				}
@@ -372,7 +372,7 @@ public class greylistVote extends JavaPlugin {
 			}
 		}
 		else if (commandLabel.equalsIgnoreCase("griefer") || commandLabel.equalsIgnoreCase("distrust")) {
-			if (!sender.hasPermission("greylistvote.griefer") && !(allowApprovedVote && sender.hasPermission("greylistvote.approved"))) {
+			if (!sender.hasPermission("greylistvote.griefer") && !(allowApprovedVote && sender.hasPermission("greylistvote.build"))) {
 				sender.sendMessage(ChatColor.RED + "You do not have permission to vote!");
 				return true;
 			}
